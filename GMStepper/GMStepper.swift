@@ -27,7 +27,7 @@ import UIKit
             else if showIntegerIfDoubleIsInteger && isInteger {
                 label.text = String(stringInterpolationSegment: Int(value))
             } else {
-                if let d = digitsCountAfterDecimalPoint {
+                if self.manualControDigitsCount {
                     label.text = String(format: "%.\(d)f", value)
                 } else {
                     label.text = String(stringInterpolationSegment: value)
@@ -70,7 +70,8 @@ import UIKit
         }
     }
     
-    @objc @IBInspectable public var digitsCountAfterDecimalPoint: Int?
+    @objc @IBInspectable public var manualControDigitsCount: Bool = false
+    @objc @IBInspectable public var digitsCountAfterDecimalPoint: Int = 0
 
     /// Text on the right button. Be sure that it fits in the button. Defaults to "+".
     @objc @IBInspectable public var rightButtonText: String = "+" {

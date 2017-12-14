@@ -28,7 +28,7 @@ import UIKit
                 label.text = String(stringInterpolationSegment: Int(value))
             } else {
                 if self.manualControDigitsCount {
-                    label.text = String(format: "%.\(d)f", value)
+                    label.text = String(format: "%.\(digitsCountAfterDecimalPoint)f", value)
                 } else {
                     label.text = String(stringInterpolationSegment: value)
                 }

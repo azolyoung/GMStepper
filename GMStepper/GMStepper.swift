@@ -160,6 +160,18 @@ import UIKit
             setNeedsLayout()
         }
     }
+    
+    @objc @IBInspectable public var adjustsFontSizeToFitWidth: Bool = false {
+        didSet {
+            label.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
+        }
+    }
+    
+    @objc @IBInspectable public var minimumScaleFactor: CGFloat = 0.0 {
+        didSet {
+            label.minimumScaleFactor = minimumScaleFactor
+        }
+    }
 
     /// Color of the flashing animation on the buttons in case the value hit the limit.
     @objc @IBInspectable public var limitHitAnimationColor: UIColor = UIColor(red:0.26, green:0.6, blue:0.87, alpha:1)
@@ -215,6 +227,7 @@ import UIKit
         label.layer.cornerRadius = self.labelCornerRadius
         label.layer.masksToBounds = true
         label.isUserInteractionEnabled = true
+        label.adjustsFontSizeToFitWidth = true
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(GMStepper.handlePan))
         panRecognizer.maximumNumberOfTouches = 1
         label.addGestureRecognizer(panRecognizer)

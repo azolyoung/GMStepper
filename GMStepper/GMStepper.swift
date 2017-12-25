@@ -297,7 +297,7 @@ import UIKit
         - For the next 1.5 sec, it changes the value every 0.1 sec.
         - Then, every 0.05 sec.
     */
-    let timerInterval = TimeInterval(0.05)
+    let timerInterval = TimeInterval(0.02)
 
     /// Check the handleTimerFire: function. While it is counting the number of fires, it decreases the mod value so that the value is altered more frequently.
     var timerFireCount = 0

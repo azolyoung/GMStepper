@@ -200,6 +200,7 @@ import UIKit
         button.setTitleColor(self.buttonsTextColor, for: .normal)
         button.backgroundColor = self.buttonsBackgroundColor
         button.titleLabel?.font = self.buttonsFont
+        button.setTitleColor(UIColor.lightGray, for: .disabled)
         button.addTarget(self, action: #selector(GMStepper.leftButtonTouchDown), for: .touchDown)
         button.addTarget(self, action: #selector(GMStepper.buttonTouchUp), for: .touchUpInside)
         button.addTarget(self, action: #selector(GMStepper.buttonTouchUp), for: .touchUpOutside)
@@ -213,6 +214,7 @@ import UIKit
         button.setTitleColor(self.buttonsTextColor, for: .normal)
         button.backgroundColor = self.buttonsBackgroundColor
         button.titleLabel?.font = self.buttonsFont
+        button.setTitleColor(UIColor.lightGray, for: .disabled)
         button.addTarget(self, action: #selector(GMStepper.rightButtonTouchDown), for: .touchDown)
         button.addTarget(self, action: #selector(GMStepper.buttonTouchUp), for: .touchUpInside)
         button.addTarget(self, action: #selector(GMStepper.buttonTouchUp), for: .touchUpOutside)
@@ -360,6 +362,18 @@ import UIKit
         NotificationCenter.default.removeObserver(self)
     }
 
+    override public var isEnabled:Bool {
+        didSet {
+            self.leftButton.isEnabled = self.isEnabled
+            self.rightButton.isEnabled = self.isEnabled
+            self.label.isEnabled = self.isEnabled
+            
+            
+            self.rightButton.setTitleColor(UIColor.lightGray, for: .disabled)
+            self.label.textColor = self.isEnabled ? self.labelTextColor : UIColor.lightGray
+        }
+    }
+    
     /// Useful closure for logging the timer interval. You can call this in the timer handler to test the autorepeat option. Not used in the current implementation.
 //    lazy var printTimerGaps: () -> () = {
 //        var prevTime: CFAbsoluteTime?

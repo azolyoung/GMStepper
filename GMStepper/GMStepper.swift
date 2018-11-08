@@ -9,7 +9,108 @@
 import UIKit
 
 @IBDesignable public class GMStepper: UIControl {
-
+    public enum GMStepperType : Int {
+        case EditableTextField
+        case StaticLabel
+    }
+    
+    public var stepperType : GMStepperType {
+        
+        didSet {
+            label.isHidden = true
+            textField.isHidden = true
+            
+            switch (self.stepperType) {
+            case .EditableTextField:
+                self.textField.isHidden = false
+            case .StaticLabel:
+                self.label.isHidden = false
+            }
+        }
+    }
+    
+    fileprivate func updateText(text: String) -> Void {
+        switch (self.stepperType) {
+        case .EditableTextField:
+            self.textField.text = text
+        case .StaticLabel:
+            self.label.text = text
+        }
+    }
+    
+    fileprivate func updateTextColor(color: UIColor) -> Void {
+        switch (self.stepperType) {
+        case .EditableTextField:
+            self.textField.textColor = color
+        case .StaticLabel:
+            self.label.textColor = color
+        }
+    }
+    
+    fileprivate func updateBackgroundColor(color: UIColor) -> Void {
+        switch (self.stepperType) {
+        case .EditableTextField:
+            self.textField.backgroundColor = color
+        case .StaticLabel:
+            self.label.backgroundColor = color
+        }
+    }
+    
+    fileprivate func updateTextFont(font: UIFont) -> Void {
+        switch (self.stepperType) {
+        case .EditableTextField:
+            self.textField.font = font
+        case .StaticLabel:
+            self.label.font = font
+        }
+    }
+    
+    fileprivate func updateCornerRadius(radius: CGFloat) -> Void {
+        switch (self.stepperType) {
+        case .EditableTextField:
+            self.textField.layer.cornerRadius = radius
+        case .StaticLabel:
+            self.label.layer.cornerRadius = radius
+        }
+    }
+    
+    fileprivate func updateBorderWidth(width: CGFloat) -> Void {
+        switch (self.stepperType) {
+        case .EditableTextField:
+            self.textField.layer.borderWidth = width
+        case .StaticLabel:
+            self.label.layer.borderWidth = width
+        }
+    }
+    
+    fileprivate func updateBorderColor(color: UIColor) -> Void {
+        switch (self.stepperType) {
+        case .EditableTextField:
+            self.textField.layer.borderColor = color.cgColor
+        case .StaticLabel:
+            self.label.layer.borderColor = color.cgColor
+        }
+    }
+    
+    fileprivate func updateAdjustsFontSizeToFitWidth(value: Bool) -> Void {
+        switch (self.stepperType) {
+        case .EditableTextField:
+            self.textField.adjustsFontSizeToFitWidth = value
+        case .StaticLabel:
+            self.label.adjustsFontSizeToFitWidth = value
+        }
+    }
+    
+    fileprivate func updateMinimumScaleFactor(minimumScaleFactor: CGFloat) -> Void {
+        switch (self.stepperType) {
+        case .EditableTextField:
+            print("textfield not support minimumScaleFactor")
+//            self.textField.contentScaleFactor = minimumScaleFactor
+        case .StaticLabel:
+            self.label.minimumScaleFactor = minimumScaleFactor
+        }
+    }
+    
     /// Current value of the stepper. Defaults to 0.
     @objc @IBInspectable public var value: Double = 0 {
         didSet {
@@ -22,15 +123,15 @@ import UIKit
             //
             
             if isInteger && stepValue == 1.0 && items.count > 0 {
-                label.text = items[Int(value)]
+                self.updateText(text: items[Int(value)])
             }
             else if showIntegerIfDoubleIsInteger && isInteger {
-                label.text = String(stringInterpolationSegment: Int(value))
+                self.updateText(text: String(stringInterpolationSegment: Int(value)))
             } else {
                 if self.manualControDigitsCount {
-                    label.text = String(format: "%.\(digitsCountAfterDecimalPoint)f", value)
+                    self.updateText(text: String(format: "%.\(digitsCountAfterDecimalPoint)f", value))
                 } else {
-                    label.text = String(stringInterpolationSegment: value)
+                    self.updateText(text: String(stringInterpolationSegment: value))
                 }
             }
 
@@ -71,7 +172,15 @@ import UIKit
     }
     
     @objc @IBInspectable public var manualControDigitsCount: Bool = false
-    @objc @IBInspectable public var digitsCountAfterDecimalPoint: Int = 0
+    @objc @IBInspectable public var digitsCountAfterDecimalPoint: Int = 0 {
+        didSet {
+            if digitsCountAfterDecimalPoint != 0 {
+                self.keyboardType = .decimalPad
+            } else {
+                self.keyboardType = .numberPad
+            }
+        }
+    }
 
     /// Text on the right button. Be sure that it fits in the button. Defaults to "+".
     @objc @IBInspectable public var rightButtonText: String = "+" {
@@ -111,29 +220,28 @@ import UIKit
     /// Text color of the middle label. Defaults to white.
     @objc @IBInspectable public var labelTextColor: UIColor = UIColor.white {
         didSet {
-            label.textColor = labelTextColor
+            self.updateTextColor(color: labelTextColor)
         }
     }
 
     /// Text color of the middle label. Defaults to lighter blue.
     @objc @IBInspectable public var labelBackgroundColor: UIColor = UIColor(red:0.26, green:0.6, blue:0.87, alpha:1) {
         didSet {
-            label.backgroundColor = labelBackgroundColor
+            self.updateBackgroundColor(color: labelBackgroundColor)
         }
     }
 
     /// Font of the middle label. Defaults to AvenirNext-Bold, 25.0 points in size.
     @objc public var labelFont = UIFont(name: "AvenirNext-Bold", size: 25.0)! {
         didSet {
-            label.font = labelFont
+            self.updateTextFont(font: labelFont)
         }
     }
        /// Corner radius of the middle label. Defaults to 0.
     @objc @IBInspectable public var labelCornerRadius: CGFloat = 0 {
         didSet {
-            label.layer.cornerRadius = labelCornerRadius
-        
-            }
+            self.updateCornerRadius(radius: labelCornerRadius)
+        }
     }
 
     /// Corner radius of the stepper's layer. Defaults to 4.0.
@@ -148,7 +256,7 @@ import UIKit
     @objc @IBInspectable public var borderWidth: CGFloat = 0.0 {
         didSet {
             layer.borderWidth = borderWidth
-            label.layer.borderWidth = borderWidth
+            self.updateBorderWidth(width: borderWidth)
         }
     }
     
@@ -156,7 +264,7 @@ import UIKit
     @objc @IBInspectable public var borderColor: UIColor = UIColor.clear {
         didSet {
             layer.borderColor = borderColor.cgColor
-            label.layer.borderColor = borderColor.cgColor
+            self.updateBorderColor(color: borderColor)
         }
     }
 
@@ -170,13 +278,13 @@ import UIKit
     
     @objc @IBInspectable public var adjustsFontSizeToFitWidth: Bool = false {
         didSet {
-            label.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
+            self.updateAdjustsFontSizeToFitWidth(value: adjustsFontSizeToFitWidth)
         }
     }
     
     @objc @IBInspectable public var minimumScaleFactor: CGFloat = 0.0 {
         didSet {
-            label.minimumScaleFactor = minimumScaleFactor
+            self.updateMinimumScaleFactor(minimumScaleFactor: minimumScaleFactor)
         }
     }
 
@@ -242,6 +350,27 @@ import UIKit
         label.addGestureRecognizer(panRecognizer)
         return label
     }()
+    
+    lazy var textField: UITextField = {
+        let textField = UITextField()
+        textField.textAlignment = .center
+        if self.showIntegerIfDoubleIsInteger && floor(self.value) == self.value {
+            textField.text = String(stringInterpolationSegment: Int(self.value))
+        } else {
+            textField.text = String(stringInterpolationSegment: self.value)
+        }
+        textField.textColor = self.labelTextColor
+        textField.backgroundColor = self.labelBackgroundColor
+        textField.font = self.labelFont
+        textField.layer.cornerRadius = self.labelCornerRadius
+        textField.layer.masksToBounds = true
+        textField.isUserInteractionEnabled = true
+        textField.adjustsFontSizeToFitWidth = true
+        let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(GMStepper.handlePan))
+        panRecognizer.maximumNumberOfTouches = 1
+        textField.addGestureRecognizer(panRecognizer)
+        return textField
+    }()
 
     var labelOriginalCenter: CGPoint!
     var labelMaximumCenterX: CGFloat!
@@ -284,7 +413,7 @@ import UIKit
                     self.value = Double(value)
                 }
                 else {
-                    label.text = items[value]
+                    self.updateText(text: items[value])
                 }
             }
         }
@@ -314,11 +443,13 @@ import UIKit
     }
 
     @objc required public init?(coder aDecoder: NSCoder) {
+        self.stepperType = .EditableTextField
         super.init(coder: aDecoder)
         setup()
     }
 
     @objc public override init(frame: CGRect) {
+        self.stepperType = .EditableTextField
         super.init(frame: frame)
         setup()
     }
@@ -326,14 +457,28 @@ import UIKit
     func setup() {
         addSubview(leftButton)
         addSubview(rightButton)
-        addSubview(label)
-
+        self.addSubview(self.textField)
+        self.addSubview(self.label)
+        labelOriginalCenter = label.center
+        
+        label.isHidden = true
+        textField.isHidden = true
+        let tmp = self.stepperType
+        self.stepperType = tmp
+        
+        textField.keyboardType = self.keyboardType
+        textField.delegate = self
+        
         backgroundColor = buttonsBackgroundColor
         layer.cornerRadius = cornerRadius
         clipsToBounds = true
-        labelOriginalCenter = label.center
-
+        
         NotificationCenter.default.addObserver(self, selector: #selector(GMStepper.reset), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.keyboardNotification(notification:)),
+                                               name: NSNotification.Name.UIKeyboardWillChangeFrame,
+                                               object: nil)
     }
 
     public override func layoutSubviews() {
@@ -342,6 +487,7 @@ import UIKit
 
         leftButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: bounds.size.height)
         label.frame = CGRect(x: buttonWidth, y: 0, width: labelWidth, height: bounds.size.height)
+        textField.frame = CGRect(x: buttonWidth, y: 0, width: labelWidth, height: bounds.size.height)
         rightButton.frame = CGRect(x: labelWidth + buttonWidth, y: 0, width: buttonWidth, height: bounds.size.height)
 
         labelMaximumCenterX = label.center.x + labelSlideLength
@@ -367,13 +513,19 @@ import UIKit
             self.leftButton.isEnabled = self.isEnabled
             self.rightButton.isEnabled = self.isEnabled
             self.label.isEnabled = self.isEnabled
-            
+            self.textField.isEnabled = self.isEnabled
             
             self.rightButton.setTitleColor(UIColor.lightGray, for: .disabled)
             self.label.textColor = self.isEnabled ? self.labelTextColor : UIColor.lightGray
+            self.textField.textColor = self.label.textColor
         }
     }
     
+    public var keyboardType : UIKeyboardType = .decimalPad {
+        didSet {
+            self.textField.keyboardType = keyboardType
+        }
+    }
     /// Useful closure for logging the timer interval. You can call this in the timer handler to test the autorepeat option. Not used in the current implementation.
 //    lazy var printTimerGaps: () -> () = {
 //        var prevTime: CFAbsoluteTime?
@@ -396,21 +548,29 @@ extension GMStepper {
             leftButton.isEnabled = false
             rightButton.isEnabled = false
         case .changed:
-            let translation = gesture.translation(in: label)
-            gesture.setTranslation(CGPoint.zero, in: label)
+            var targetView : UIView!
+            switch (self.stepperType) {
+            case .EditableTextField:
+                targetView = self.textField
+            case .StaticLabel:
+                targetView = self.label
+            }
+            
+            let translation = gesture.translation(in: targetView)
+            gesture.setTranslation(CGPoint.zero, in: targetView)
 
-            let slidingRight = gesture.velocity(in: label).x > 0
-            let slidingLeft = gesture.velocity(in: label).x < 0
+            let slidingRight = gesture.velocity(in: targetView).x > 0
+            let slidingLeft = gesture.velocity(in: targetView).x < 0
 
             // Move the label with pan
             if slidingRight {
-                label.center.x = min(labelMaximumCenterX, label.center.x + translation.x)
+                targetView.center.x = min(labelMaximumCenterX, targetView.center.x + translation.x)
             } else if slidingLeft {
-                label.center.x = max(labelMinimumCenterX, label.center.x + translation.x)
+                targetView.center.x = max(labelMinimumCenterX, targetView.center.x + translation.x)
             }
 
             // When the label hits the edges, increase/decrease value and change button backgrounds
-            if label.center.x == labelMaximumCenterX {
+            if targetView.center.x == labelMaximumCenterX {
                 // If not hit the right edge before, increase the value and start the timer. If already hit the edge, do nothing. Timer will handle it.
                 if panState != .HitRightEdge {
                     stepperState = .ShouldIncrease
@@ -418,7 +578,7 @@ extension GMStepper {
                 }
                 
                 animateLimitHitIfNeeded()
-            } else if label.center.x == labelMinimumCenterX {
+            } else if targetView.center.x == labelMinimumCenterX {
                 if panState != .HitLeftEdge {
                     stepperState = .ShouldDecrease
                     panState = .HitLeftEdge
@@ -448,9 +608,11 @@ extension GMStepper {
         leftButton.isEnabled = true
         rightButton.isEnabled = true
         label.isUserInteractionEnabled = true
+        textField.isUserInteractionEnabled = true
 
         UIView.animate(withDuration: self.labelSlideDuration, animations: {
             self.label.center = self.labelOriginalCenter
+            self.textField.center = self.labelOriginalCenter
             self.rightButton.backgroundColor = self.buttonsBackgroundColor
             self.leftButton.backgroundColor = self.buttonsBackgroundColor
         })
@@ -462,6 +624,7 @@ extension GMStepper {
     @objc func leftButtonTouchDown(button: UIButton) {
         rightButton.isEnabled = false
         label.isUserInteractionEnabled = false
+        textField.isUserInteractionEnabled = false
         resetTimer()
 
         if value == minimumValue {
@@ -476,6 +639,7 @@ extension GMStepper {
     @objc func rightButtonTouchDown(button: UIButton) {
         leftButton.isEnabled = false
         label.isUserInteractionEnabled = false
+        textField.isUserInteractionEnabled = false
         resetTimer()
 
         if value == maximumValue {
@@ -496,20 +660,38 @@ extension GMStepper {
 
     func animateSlideLeft() {
         UIView.animate(withDuration: labelSlideDuration) {
-            self.label.center.x -= self.labelSlideLength
+            switch (self.stepperType) {
+            case .EditableTextField:
+                self.textField.center.x -= self.labelSlideLength
+            case .StaticLabel:
+                self.label.center.x -= self.labelSlideLength
+            }
+            
         }
     }
 
     func animateSlideRight() {
         UIView.animate(withDuration: labelSlideDuration) {
-            self.label.center.x += self.labelSlideLength
+            switch (self.stepperType) {
+            case .EditableTextField:
+                self.textField.center.x += self.labelSlideLength
+            case .StaticLabel:
+                self.label.center.x += self.labelSlideLength
+            }
         }
     }
 
     func animateToOriginalPosition() {
-        if self.label.center != self.labelOriginalCenter {
+        var targetView : UIView!
+        switch (self.stepperType) {
+        case .EditableTextField:
+            targetView = self.textField
+        case .StaticLabel:
+            targetView = self.label
+        }
+        if targetView.center != self.labelOriginalCenter {
             UIView.animate(withDuration: labelSlideDuration) {
-                self.label.center = self.labelOriginalCenter
+                targetView.center = self.labelOriginalCenter
             }
         }
     }
@@ -550,6 +732,20 @@ extension GMStepper {
             timerFireCount = 0
         }
     }
+}
 
-
+extension GMStepper : UITextFieldDelegate {
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if string.lengthOfBytes(using: .ascii) == 0 {
+            return true
+        }
+        
+        if textField.keyboardType == .numberPad {
+            if let r = string.rangeOfCharacter(from: NSCharacterSet.decimalDigits.inverted) {
+                return false
+            }
+        }
+        
+        return true;
+    }
 }

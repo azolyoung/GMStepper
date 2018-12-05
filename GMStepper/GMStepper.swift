@@ -174,11 +174,11 @@ import UIKit
     @objc @IBInspectable public var manualControDigitsCount: Bool = false
     @objc @IBInspectable public var digitsCountAfterDecimalPoint: Int = 0 {
         didSet {
-            if digitsCountAfterDecimalPoint != 0 {
-                self.keyboardType = .decimalPad
-            } else {
-                self.keyboardType = .numberPad
-            }
+//            if digitsCountAfterDecimalPoint != 0 {
+//                self.keyboardType = .decimalPad
+//            } else {
+                self.keyboardType = .numbersAndPunctuation
+//            }
         }
     }
 
@@ -366,6 +366,7 @@ import UIKit
         textField.layer.masksToBounds = true
         textField.isUserInteractionEnabled = true
         textField.adjustsFontSizeToFitWidth = true
+        textField.tag = 1000
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(GMStepper.handlePan))
         panRecognizer.maximumNumberOfTouches = 1
         textField.addGestureRecognizer(panRecognizer)
@@ -474,6 +475,7 @@ import UIKit
         clipsToBounds = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(GMStepper.reset), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(GMStepper.onTextDidChange(_:)), name: NSNotification.Name.UITextFieldTextDidChange, object: textField)
     }
 
     public override func layoutSubviews() {
@@ -516,7 +518,7 @@ import UIKit
         }
     }
     
-    public var keyboardType : UIKeyboardType = .decimalPad {
+    public var keyboardType : UIKeyboardType = .numbersAndPunctuation {
         didSet {
             self.textField.keyboardType = keyboardType
         }
@@ -735,12 +737,32 @@ extension GMStepper : UITextFieldDelegate {
             return true
         }
         
-        if textField.keyboardType == .numberPad {
-            if let r = string.rangeOfCharacter(from: NSCharacterSet.decimalDigits.inverted) {
+        if textField.keyboardType == .numbersAndPunctuation || textField.keyboardType == .numberPad || textField.keyboardType == .decimalPad {
+            let characterSet = NSMutableCharacterSet.decimalDigit()
+            characterSet.addCharacters(in: "-")
+//            if textField.keyboardType == .decimalPad {
+                characterSet.addCharacters(in: ".")
+//            }
+            if let _ = string.rangeOfCharacter(from: characterSet.inverted) {
                 return false
             }
         }
         
         return true;
+    }
+    
+    @objc func onTextDidChange(_ notification : Notification) {
+//        if let textField = notification.object as? UITextField {
+//            if textField.tag == 1000 {
+//                if !textField.text!.hasSuffix(".") {
+//                    self.value = (textField.text! as NSString).doubleValue
+//                }
+//            }
+//        }
+    }
+    
+    public func textFieldDidEndEditing(_ textField: UITextField) {
+        self.value = (textField.text! as NSString).doubleValue
+        print("cdljsadcadsjclkj")
     }
 }

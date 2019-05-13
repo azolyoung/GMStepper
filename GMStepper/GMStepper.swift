@@ -104,8 +104,7 @@ import UIKit
     fileprivate func updateMinimumScaleFactor(minimumScaleFactor: CGFloat) -> Void {
         switch (self.stepperType) {
         case .EditableTextField:
-            print("textfield not support minimumScaleFactor")
-//            self.textField.contentScaleFactor = minimumScaleFactor
+            self.textField.minimumFontSize = 5
         case .StaticLabel:
             self.label.minimumScaleFactor = minimumScaleFactor
         }

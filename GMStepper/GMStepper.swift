@@ -125,12 +125,12 @@ import UIKit
                 self.updateText(text: items[Int(value)])
             }
             else if showIntegerIfDoubleIsInteger && isInteger {
-                self.updateText(text: String(stringInterpolationSegment: Int(value)))
+                self.updateText(text: "\(Int(value))")
             } else {
                 if self.manualControDigitsCount {
                     self.updateText(text: String(format: "%.\(digitsCountAfterDecimalPoint)f", value))
                 } else {
-                    self.updateText(text: String(stringInterpolationSegment: value))
+                    self.updateText(text: "\(value)")
                 }
             }
 
@@ -333,9 +333,9 @@ import UIKit
         let label = UILabel()
         label.textAlignment = .center
         if self.showIntegerIfDoubleIsInteger && floor(self.value) == self.value {
-            label.text = String(stringInterpolationSegment: Int(self.value))
+            label.text = "\(Int(self.value))"
         } else {
-            label.text = String(stringInterpolationSegment: self.value)
+            label.text = "\(self.value)"
         }
         label.textColor = self.labelTextColor
         label.backgroundColor = self.labelBackgroundColor
@@ -354,9 +354,9 @@ import UIKit
         let textField = UITextField()
         textField.textAlignment = .center
         if self.showIntegerIfDoubleIsInteger && floor(self.value) == self.value {
-            textField.text = String(stringInterpolationSegment: Int(self.value))
+            textField.text = "\(Int(self.value))"
         } else {
-            textField.text = String(stringInterpolationSegment: self.value)
+            textField.text = "\(self.value)"
         }
         textField.textColor = self.labelTextColor
         textField.backgroundColor = self.labelBackgroundColor
